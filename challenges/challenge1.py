@@ -1,4 +1,4 @@
-from tb3 import *
+from tools.tb3 import *
 
 
 class Tb3(Node):
@@ -47,30 +47,13 @@ class Tb3(Node):
         """
         if self.state == State.TO_THE_FIRST_WALL:
             self.to_first_wall(msg)
-        elif self.state == State.ROTATING:
-            self.rotate(msg)
-        elif self.state == State.TO_THE_SECOND_WALL:
-            self.to_second_wall(msg)
         elif self.state == State.STOP:
             self.stop()
     
     def to_first_wall(self, msg):
-        if msg.ranges[0] < 0.3:
-            self.vel(lin_vel_percent=0, ang_vel_percent=0)
-            self.state = State.ROTATING
-        else:
-            self.vel(lin_vel_percent=50)
-
-    def rotate(self, msg):
-        if msg.ranges[-90] > 0.4:
-            self.vel(lin_vel_percent=0, ang_vel_percent=85)
-        else:
-            self.vel(lin_vel_percent=0, ang_vel_percent=0)
-            self.state = State.TO_THE_SECOND_WALL
-
-    def to_second_wall(self, msg):
         if msg.ranges[0] < 0.2:
             self.vel(lin_vel_percent=0, ang_vel_percent=0)
+            self.state = State.STOP
         else:
             self.vel(lin_vel_percent=50)
 
