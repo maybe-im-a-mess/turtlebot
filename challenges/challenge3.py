@@ -1,37 +1,29 @@
-from challenges.tb3 import *
+from tb3 import *
 
 class Tb3(Node):
     def __init__(self):
         super().__init__('tb3')
 
         self.cmd_vel_pub = self.create_publisher(
-                Twist,      # message type
-                'cmd_vel',  # topic name
-                1)          # history depth
+                Twist,
+                'cmd_vel',
+                1) 
         
-
         self.odom_sub = self.create_subscription(
                 Odometry,
                 'odom',
-                self.odom_callback,  # function to run upon message arrival
-                qos_profile_sensor_data)  # allows packet loss
+                self.odom_callback, 
+                qos_profile_sensor_data) 
         
-
         self.ang_vel_percent = 0
         self.lin_vel_percent = 0
-        self.x = 0.5
-        self.y = 0.5
-        self.yaw = 0.0
 
         self.state = State.TO_THE_FIRST_WALL
 
-
     def vel(self, lin_vel_percent, ang_vel_percent=0):
-        """ publishes linear and angular velocities in percent
-        """
-        # for TB3 Waffle
-        MAX_LIN_VEL = 0.26  # m/s
-        MAX_ANG_VEL = 1.82  # rad/s
+
+        MAX_LIN_VEL = 0.26
+        MAX_ANG_VEL = 1.82
 
         cmd_vel_msg = Twist()
         cmd_vel_msg.linear.x = MAX_LIN_VEL * lin_vel_percent / 100
@@ -41,13 +33,20 @@ class Tb3(Node):
         self.ang_vel_percent = ang_vel_percent
         self.lin_vel_percent = lin_vel_percent
 
-
     def odom_callback(self, msg):
-        """ is run whenever an Odometry msg is received
-        """
         self.x = msg.pose.pose.position.x
         self.y = msg.pose.pose.position.y
         self.z = msg.pose.pose.orientation.z
+
+        quaternion = (
+            msg.pose.pose.orientation.w,
+            msg.pose.pose.orientation.x,
+            msg.pose.pose.orientation.y,
+            msg.pose.pose.orientation.z
+        )
+
+        pitch, roll, yaw = quat2euler(quaternion)
+        self.yaw = yaw * 180 / pi
 
         if self.state == State.TO_THE_FIRST_WALL:
             self.to_first_wall()
@@ -66,14 +65,14 @@ class Tb3(Node):
             self.vel(lin_vel_percent=50)
 
     def rotate(self):
-        if self.z < 0.99997:
-            self.vel(lin_vel_percent=0, ang_vel_percent=10)
+        if 0 < self.yaw < 180:
+            self.vel(lin_vel_percent=0, ang_vel_percent=20)
         else:
             self.vel(lin_vel_percent=0, ang_vel_percent=0)
             self.state = State.TO_THE_SECOND_WALL
 
     def to_second_wall(self):
-        if self.x < 0.2:
+        if self.x < 0.1:
             self.vel(lin_vel_percent=0, ang_vel_percent=0)
             self.state = State.STOP
         else:

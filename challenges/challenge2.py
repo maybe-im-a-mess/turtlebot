@@ -6,16 +6,16 @@ class Tb3(Node):
         super().__init__('tb3')
 
         self.cmd_vel_pub = self.create_publisher(
-                Twist,      # message type
-                'cmd_vel',  # topic name
-                1)          # history depth
+                Twist, 
+                'cmd_vel', 
+                1)
         
 
         self.scan_sub = self.create_subscription(
                 LaserScan,
                 'scan',
-                self.scan_callback,  # function to run upon message arrival
-                qos_profile_sensor_data)  # allows packet loss
+                self.scan_callback,
+                qos_profile_sensor_data) 
         
         self.ang_vel_percent = 0
         self.lin_vel_percent = 0
