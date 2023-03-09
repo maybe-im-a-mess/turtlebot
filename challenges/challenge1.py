@@ -1,4 +1,4 @@
-from tools.tb3 import *
+from tb3 import *
 
 
 class Tb3(Node):
