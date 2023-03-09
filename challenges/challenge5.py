@@ -1,5 +1,4 @@
-from challenges.tb3 import *
-
+from tb3 import *
 
 
 class Tb3(Node):
@@ -7,27 +6,27 @@ class Tb3(Node):
         super().__init__('tb3')
 
         self.cmd_vel_pub = self.create_publisher(
-            Twist,  # message type
-            'cmd_vel',  # topic name
-            1)  # history depth
+            Twist,
+            'cmd_vel',
+            1)  
 
         self.scan_sub = self.create_subscription(
             LaserScan,
             'scan',
-            self.scan_callback,  # function to run upon message arrival
-            qos_profile_sensor_data)  # allows packet loss
+            self.scan_callback, 
+            qos_profile_sensor_data) 
 
         self.camera_sub = self.create_subscription(
             Image,
             'camera/image_raw',
-            self.camera_callback,  # function to run upon message arrival
-            qos_profile_sensor_data)  # allows packet loss
+            self.camera_callback,
+            qos_profile_sensor_data)
 
         self.odom_sub = self.create_subscription(
             Odometry,
             'odom',
-            self.odom_callback,  # function to run upon message arrival
-            qos_profile_sensor_data)  # allows packet loss
+            self.odom_callback, 
+            qos_profile_sensor_data) 
 
         self.ang_vel_percent = 0
         self.lin_vel_percent = 0
@@ -38,11 +37,8 @@ class Tb3(Node):
         self.state = State.DRIVE_FORWARD
 
     def vel(self, lin_vel_percent, ang_vel_percent=0):
-        """ publishes linear and angular velocities in percent
-        """
-        # for TB3 Waffle
-        MAX_LIN_VEL = 0.26  # m/s
-        MAX_ANG_VEL = 1.82  # rad/s
+        MAX_LIN_VEL = 0.26 
+        MAX_ANG_VEL = 1.82
 
         cmd_vel_msg = Twist()
         cmd_vel_msg.linear.x = MAX_LIN_VEL * lin_vel_percent / 100
@@ -55,7 +51,6 @@ class Tb3(Node):
     def camera_callback(self, msg):
         bridge = CvBridge()
         cv_image = bridge.imgmsg_to_cv2(msg, "bgr8")
-        # Apply color segmentation to detect the red wall
         hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         lower_red = np.array([0, 50, 50])
         upper_red = np.array([10, 255, 255])
@@ -65,7 +60,6 @@ class Tb3(Node):
         mask2 = cv2.inRange(hsv_image, lower_red, upper_red)
         red_mask = mask1 + mask2
 
-        # Check if red wall is detected in the center of the image
         center_x = int(cv_image.shape[1] / 2)
         center_y = int(cv_image.shape[0] / 2)
         red_mask_center = red_mask[center_y - 10:center_y + 10, center_x - 10:center_x + 10]

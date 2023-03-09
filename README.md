@@ -17,4 +17,4 @@ make
 To run the bot in the simulation:
 1. Run the world you want to use:
 ./play world_1_1.sdf
-2. Run the python file with the challenge you want 
+2. Run the python file with the challenge you want.
