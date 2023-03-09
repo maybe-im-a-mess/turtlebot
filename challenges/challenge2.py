@@ -33,7 +33,6 @@ class Tb3(Node):
         self.ang_vel_percent = ang_vel_percent
         self.lin_vel_percent = lin_vel_percent
 
-
     def scan_callback(self, msg):
         if self.state == State.TO_THE_FIRST_WALL:
             self.to_first_wall(msg)
@@ -75,8 +74,7 @@ def main(args=None):
     print('waiting for messages...')
 
     try:
-        rclpy.spin(tb3)  # Execute tb3 node
-        # Blocks until the executor (spin) cannot work
+        rclpy.spin(tb3)
     except KeyboardInterrupt:
         pass
 
