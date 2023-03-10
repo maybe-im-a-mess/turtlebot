@@ -33,7 +33,7 @@ If not, you can use `pip install mako`.
 
 **Challenge 3**: This challenge consists of the same actions as the previous one, but instead of laser sensors, the position and orientation published in `/odom` are used.
 
-**Challenge 4**: The robot is located in a small maze (2X2 cells). It finds a way to the cell with the red wall and stops in front of it without any collision.
+**Challenge 4**: The robot is located in a small maze (2x2 cells). It finds a way to the cell with the red wall and stops in front of it without any collision.
 
 **Challenge 5**: The robot is located in a bigger maze (5x5 cells). It finds a way to the cell with red wall, touches the red wall in the shortest time possible without any other collisions.
 
