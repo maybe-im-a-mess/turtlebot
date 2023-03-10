@@ -39,7 +39,7 @@ If not, you can use `pip install mako`.
 
 ### About the worlds:
 
-`world_1_1.sdf` is a world with just one cell for first threee challenges.
+`world_1_1.sdf` is a world with just one cell for the first three challenges.
 
 `world_2_2.sdf` is a world with a small maze for the fourth challenge.
 
